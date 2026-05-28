@@ -1,0 +1,11 @@
+// tsconfig.json 
+{// This file is used to specify the root files and the compiler options required to compile the project.
+// For more information, see the documentation: https://www.typescriptlang.org/tsconfig
+  "compilerOptions": {
+    "target": "ESNext", 
+    "module": "commonjs",// Specify module code generation: 'commonjs', 'amd', 'system', 'umd', 'es6', 'es2015' or 'ESNext'
+    "types": ["node"],  // Specify type definitions to include in the compilation.
+    "strict": true,
+    "esModuleInterop": true
+  }
+}
