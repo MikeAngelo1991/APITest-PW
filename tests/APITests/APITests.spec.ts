@@ -12,6 +12,11 @@ test('Se puede crear un Issue en el repositorio de Github', async ({ request }) 
             body: 'Descripción del bug', // El cuerpo del issue que se va a crear, proporcionando una descripción del bug reportado
         }
     });
+
+    //debugging
+    console.log("STATUS:", newIssue.status());
+    console.log("BODY:", await newIssue.text());
+
    // expect(newIssue.ok()).toBeTruthy(); // Se espera que la respuesta de la solicitud sea exitosa (código de estado HTTP 200-299) y se verifica que el issue se haya creado correctamente
     expect(newIssue.status()).toBe(201); // Se espera que el código de estado de la respuesta sea 201, lo que indica que el issue se ha creado exitosamente
 
@@ -20,7 +25,7 @@ test('Se puede crear un Issue en el repositorio de Github', async ({ request }) 
     expect(issues.ok()).toBeTruthy(); // Se espera que la respuesta de la solicitud GET sea exitosa, lo que indica que se pudo obtener la lista de issues del repositorio
     expect(await issues.json()).toContainEqual(expect.objectContaining({ // Se espera que la lista de issues obtenida contenga un objeto que tenga al menos las propiedades 'title' y 'body' con los valores especificados para el issue creado
         title: '[Bug] reporte 1',
-            body: 'Descripción del bug',
+        body: 'Descripción del bug',
     }));
 });
 

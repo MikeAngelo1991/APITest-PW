@@ -1,13 +1,16 @@
 import { defineConfig, devices } from '@playwright/test';
 
-
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+import dotenv from 'dotenv'; // Importa la biblioteca dotenv para cargar variables de entorno desde un archivo .env
+import path from 'path'; // Importa el módulo path para resolver rutas de archivos de manera segura y compatible con diferentes sistemas operativos
+dotenv.config({ path: path.resolve(__dirname, '.env') }); // Carga las variables de entorno desde el archivo .env ubicado en la raíz 
+                                                         // del proyecto, utilizando __dirname para asegurar que la ruta sea correcta 
+                                                         // independientemente de dónde se ejecute el script
+
+console.log("Verificación de TOKEN:", process.env.API_TOKEN); // Imprime el valor de la variable de entorno API_TOKEN en la consola para verificar que se ha cargado correctamente
 
 /**
  * See https://playwright.dev/docs/test-configuration.
