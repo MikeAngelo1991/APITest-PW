@@ -1,8 +1,20 @@
 import {test, expect} from '@playwright/test';
-import { title } from 'node:process';
 
-const REPO = "APITest-PW"; // Asegúrate de que este repositorio exista en tu cuenta de GitHub y que el token tenga permisos para acceder a él
+//const REPO = "APITest-PW"; // Asegúrate de que este repositorio exista en tu cuenta de GitHub y que el token tenga permisos para acceder a él
+const REPO = "DEFAULTREPO";
 const USER = "MikeAngelo1991"; // Asegúrate de que el token de autenticación tenga permisos para acceder a este repositorio y realizar acciones como crear issues
+
+// El bloque beforeAll se ejecuta antes de que se ejecuten las pruebas y se utiliza para configurar el entorno de prueba, en este caso, 
+// para crear un nuevo repositorio en GitHub utilizando la API de GitHub a través de Playwright
+test.beforeAll(async ({ request }) => {
+    const response = await request.post(`/user/repos`,{
+        data: {
+            name: REPO
+        }
+    });
+    //expect(response.ok()).toBeTruthy();
+    expect([201]).toContain(response.status()); 
+})
 
 // Prueba para verificar que se pueden crear issues en el repositorio de GitHub utilizando la API de GitHub a través de Playwright
 test('Se puede crear un Issue en el repositorio de Github', async ({ request }) => { // El test recibe un objeto 'request' que permite realizar solicitudes HTTP a la API de GitHub
@@ -15,7 +27,10 @@ test('Se puede crear un Issue en el repositorio de Github', async ({ request }) 
 
     //debugging
     console.log("STATUS:", newIssue.status());
-    console.log("BODY:", await newIssue.text());
+   // console.log("BODY:", await newIssue.text());
+    
+    // Espera para que GitHub procese
+   await new Promise(resolve => setTimeout(resolve, 10000));
 
    // expect(newIssue.ok()).toBeTruthy(); // Se espera que la respuesta de la solicitud sea exitosa (código de estado HTTP 200-299) y se verifica que el issue se haya creado correctamente
     expect(newIssue.status()).toBe(201); // Se espera que el código de estado de la respuesta sea 201, lo que indica que el issue se ha creado exitosamente
@@ -40,7 +55,10 @@ test('Se puede crear un request de feature', async ({ request }) => {
 
     //debugging
     console.log("STATUS:", newIssue.status());
-    console.log("BODY:", await newIssue.text());
+    //console.log("BODY:", await newIssue.text());
+
+    // Espera para que GitHub procese
+    await new Promise(resolve => setTimeout(resolve, 10000));
 
     expect(newIssue.status()).toBe(201); // Se espera que el código de estado de la respuesta sea 201, lo que indica que el issue se ha creado exitosamente
 
@@ -51,3 +69,12 @@ test('Se puede crear un request de feature', async ({ request }) => {
         body: 'Descripción del feature',
     }));
 });
+
+// El bloque afterAll se ejecuta después de que se hayan ejecutado todas las pruebas y se utiliza para limpiar el entorno de prueba, 
+// en este caso, para eliminar el repositorio creado en GitHub utilizando la API de GitHub a través de Playwright
+test.afterAll(async ({ request }) => {
+    const response = await request.delete(`/repos/${USER}/${REPO}`);
+    expect([204, 404]).toContain(response.status());// Se espera que la respuesta de la solicitud de eliminación sea exitosa (código de estado HTTP 204) o que el repositorio ya no exista (código de estado HTTP 404), lo que indica que se ha limpiado el entorno de prueba eliminando el repositorio creado
+    //expect(response.ok()).toBeTruthy();
+    
+})

@@ -28,12 +28,14 @@ export default defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+  globalSetup: './global-setup.ts',
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
     baseURL: 'https://thefreerangetester.github.io/sandbox-automation-testing/',
     testIdAttribute: 'data-test-id', // Personalización del atributo para selección de elementos en tests
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace:  'on',  //'on-first-retry',
+    storageState: 'auth.json', // Configuración para mantener el estado de autenticación entre pruebas, utilizando un archivo llamado auth.json
   }, 
 
   /* Configure projects for major browsers */
