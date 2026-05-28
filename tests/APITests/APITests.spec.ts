@@ -37,5 +37,17 @@ test('Se puede crear un request de feature', async ({ request }) => {
             body: 'Descripción del feature',
         }
     });
+
+    //debugging
+    console.log("STATUS:", newIssue.status());
+    console.log("BODY:", await newIssue.text());
+
     expect(newIssue.status()).toBe(201); // Se espera que el código de estado de la respuesta sea 201, lo que indica que el issue se ha creado exitosamente
+
+    const issues = await request.get(`/repos/${USER}/${REPO}/issues`); 
+    expect(issues.ok()).toBeTruthy(); // Se espera que la respuesta de la solicitud GET sea exitosa, lo que indica que se pudo obtener la lista de issues del repositorio
+    expect(await issues.json()).toContainEqual(expect.objectContaining({ // Se espera que la lista de issues obtenida contenga un objeto que tenga al menos las propiedades 'title' y 'body' con los valores especificados para el issue creado
+        title: '[Feature] request 1',
+        body: 'Descripción del feature',
+    }));
 });
