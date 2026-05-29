@@ -20,7 +20,7 @@ export default defineConfig({
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
-  forbidOnly: !!process.env.CI,
+  forbidOnly: !!process.env.CI, // Si la variable de entorno CI está definida, se establece forbidOnly en true, lo que hace que la ejecución falle si hay algún test marcado con test.only, lo que ayuda a evitar que se ejecuten solo un subconjunto de tests en un entorno de integración continua.
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
@@ -35,6 +35,8 @@ export default defineConfig({
     testIdAttribute: 'data-test-id', // Personalización del atributo para selección de elementos en tests
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace:  'on',  //'on-first-retry',
+    video: 'retain-on-failure', // Personalización para grabar video solo en caso de falla
+    screenshot: 'only-on-failure', // Personalización para tomar screenshots solo en caso de falla
     storageState: 'auth.json', // Configuración para mantener el estado de autenticación entre pruebas, utilizando un archivo llamado auth.json
   }, 
 
@@ -44,8 +46,7 @@ export default defineConfig({
     {
       name: 'Computadora 1', 
       //testIgnore: 'FreeRangeTesters.spec.ts', // Ignora este test específico para este proyecto
-      testMatch: 'AutomationSandbox.spec.ts',
-      retries: 1,
+      //testMatch: 'AutomationSandbox.spec.ts',
       use: {
         
         ...devices['Desktop Chrome'], // Personaliza el navegador para este proyecto
@@ -63,7 +64,7 @@ export default defineConfig({
       use: {...devices['Desktop Chrome']},
     },
     {
-      name: 'Iphone',
+      name: 'iPhone',
       testMatch: 'AutomationSandbox.spec.ts',
       retries: 1, 
       use: {...devices['iPhone 12']},

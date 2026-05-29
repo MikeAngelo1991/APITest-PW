@@ -1,5 +1,5 @@
 import { test, Browser, Page, expect } from '@playwright/test';
-import { log } from 'node:console';
+import {SandboxPage} from './Pages/SandboxPage';
 
 (async () => {
     let browser: Browser;
@@ -12,7 +12,7 @@ import { log } from 'node:console';
 
         //test.skip(browserName === 'chromium', 'No corre en Chromium todavía'); // para saltar este test en un navegador específico en toda la clase
 
-        test('Click en Botón ID Dinámico', async ({ page }) => {
+        test('Click en Botón ID Dinámico', async ({ page }) => { //corre el test con su propia pagina, no comparte la página con el resto de los test de la clase, cada test es independiente y se abre una nueva página para cada uno
 
             await test.step('Dado que navego al Sandbox de Automation de Free Range Testers', async () => {
 
@@ -33,9 +33,7 @@ import { log } from 'node:console';
 
                 await expect(page.getByText('OMG, aparezco después de 3')).toBeVisible();
 
-
             })
-
 
         })
 
@@ -74,15 +72,19 @@ import { log } from 'node:console';
             })
 
             await test.step('Puedo seleccionar el checkbox para Pasta', async () => {
-                await page.getByRole('checkbox', { name: 'Pasta 🍝' }).check(); //valida se haya seleccionado el radiobutton o checkbox y lo deja seleccionado
-                await expect(page.getByRole('checkbox', { name: 'Pasta 🍝' }), 'El checkbox no estaba seleccionado').toBeChecked(); // esta checkeado que se seleccionó
-
+                const sandbox =  new SandboxPage(page); // se instancia la clase creada en Pages/SandboxPage.ts para usar su método
+                await sandbox.checkPasta(); // se llama al método creado en la clase para seleccionar el checkbox de Pasta
+                //await page.getByRole('checkbox', { name: 'Pasta 🍝' }).check(); //valida se haya seleccionado el radiobutton o checkbox y lo deja seleccionado
+                
+                //await expect(page.getByRole('checkbox', { name: 'Pasta 🍝' }), 'El checkbox no estaba seleccionado').toBeChecked(); // esta checkeado que se seleccionó
+                await expect(sandbox.pastaCheckbox, 'El checkbox no estaba seleccionado').toBeChecked(); // se valida que el checkbox esté seleccionado utilizando el locator
+                                                                                                         // definido en la clase SandboxPage
             })
 
             await test.step('Puedo desseleccionar el checkbox para Pasta', async () => {
 
                 await page.getByRole('checkbox', { name: 'Pasta 🍝' }).uncheck(); // para deseleccionar
-                await expect(page.getByRole('checkbox', { name: 'Pasta 🍝' })).not.toBeChecked(); // verificar que no esté seleccionado
+                await expect(page.getByRole('checkbox', { name: 'Pasta 🍝' }), 'El checkbox estaba seleccionado').not.toBeChecked(); // verificar que no esté seleccionado
 
             })
 
@@ -103,7 +105,7 @@ import { log } from 'node:console';
 
         })
 
-        test.only('Dado que puedo seleccionar item del Dropdown', async ({ page }) => {
+        test('Dado que puedo seleccionar item del Dropdown', async ({ page }) => {
 
             await test.step('Dado que navego al Sandbox de Automation de Free Range Testers', async () => {
 
@@ -214,7 +216,7 @@ import { log } from 'node:console';
 
         })
 
-        test('Valido que los elementos visibles para los chackboxes', async ({ page }) => {
+        test('Valido los elementos visibles para los chackboxes', async ({ page }) => {
 
             await test.step('Dado que navego al Sandbox de Automation de Free Range Testers', async () => {
 
